@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pedidos</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/Pedidos/pedidos.css') }}">
+</head>
+<body>
+
+  <div class="chat-container">
+    <div class="chat-header">Mesa_Pedidos  &lt;3</div>
+    
+    <div class="chat-box" id="chat-box"></div>
+    
+    <div class="chat-input chat-input-duplo">
+      <button class="btn-externo" onclick="window.location.replace('/')"><h2>Voltar</h2></button>
+      <button class="btn-externo" id="btn-toggle-concluidos" onclick="alternarPedidosConcluidos()"><h2>Mostrar concluidos</h2></button>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='script/Pedidos/pedidos.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gestao</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/Estatisticas/gestao.css') }}">
+</head>
+<body>
+  <div class="chat-container">
+    <div class="chat-header">
+      <div>
+        <h1>Mesa_Gestao</h1>
+        <p>Painel administrativo com espacos preparados para evolucao do sistema.</p>
+      </div>
+    </div>
+
+    <div class="chat-box">
+      <section class="painel-grid">
+        <article class="painel-card painel-card-destaque">
+          <div class="painel-card-topo">
+            <div>
+              <h2>Produtos do Cardapio</h2>
+              <p>Cadastre novos itens e remova produtos que nao devem mais aparecer no cardapio.</p>
+            </div>
+            <div class="painel-card-acoes">
+              <button type="button" id="toggle-produtos-card" class="btn-secundario-linha">Retrair</button>
+              <span class="card-tag card-tag-ativo">Ativo</span>
+            </div>
+          </div>
+
+          <div id="produtos-card-conteudo" class="painel-card-conteudo">
+            <form id="produto-form" class="produto-form">
+              <div class="campo-duplo">
+                <label>
+                  Nome
+                  <input type="text" id="produto-nome" required>
+                </label>
+                <label>
+                  Categoria
+                  <input type="text" id="produto-categoria" required>
+                </label>
+              </div>
+
+              <div class="campo-triplo">
+                <label>
+                  Custo
+                  <input type="number" id="produto-custo" min="0" step="0.01" required>
+                </label>
+                <label>
+                  Valor
+                  <input type="number" id="produto-valor" min="0" step="0.01" required>
+                </label>
+                <label>
+                  Imagem
+                  <input type="file" id="produto-imagem" accept="image/*">
+                </label>
+              </div>
+
+              <label>
+                Receita
+                <textarea id="produto-receita" rows="3" placeholder="Descricao, preparo ou observacoes internas"></textarea>
+              </label>
+
+              <div class="produto-acoes-form">
+                <button type="submit" class="btn-principal-linha">Adicionar produto</button>
+                <span id="produto-form-status" class="status-texto"></span>
+              </div>
+            </form>
+
+            <div class="lista-topo">
+              <h3>Produtos cadastrados</h3>
+              <button type="button" class="btn-secundario-linha" id="atualizar-produtos">Atualizar lista</button>
+            </div>
+            <div id="gestao-produtos-lista" class="produtos-lista"></div>
+          </div>
+        </article>
+
+        <article class="painel-card">
+          <div class="painel-card-topo">
+            <div>
+              <h2>Usuarios e Permissoes</h2>
+              <p>Cadastre operadores e admins, controle perfis e remova acessos que nao devem mais usar o painel.</p>
+            </div>
+            <div class="painel-card-acoes">
+              <button type="button" id="toggle-usuarios-card" class="btn-secundario-linha">Retrair</button>
+              <span class="card-tag card-tag-ativo">Ativo</span>
+            </div>
+          </div>
+          <div id="usuarios-card-conteudo" class="painel-card-conteudo">
+            <form id="usuario-form" class="produto-form">
+              <div class="campo-duplo">
+                <label>
+                  Nome
+                  <input type="text" id="usuario-nome" required>
+                </label>
+                <label>
+                  Login
+                  <input type="text" id="usuario-login" required>
+                </label>
+              </div>
+
+              <div class="campo-triplo">
+                <label>
+                  Senha
+                  <input type="password" id="usuario-senha" required>
+                </label>
+                <label>
+                  Perfil
+                  <select id="usuario-perfil">
+                    <option value="Operador">Operador</option>
+                    <option value="Admin">Admin</option>
+                  </select>
+                </label>
+                <label class="checkbox-inline">
+                  <span>Usuario ativo</span>
+                  <input type="checkbox" id="usuario-ativo" checked>
+                </label>
+              </div>
+
+              <div class="produto-acoes-form">
+                <button type="submit" class="btn-principal-linha">Adicionar usuario</button>
+                <span id="usuario-form-status" class="status-texto"></span>
+              </div>
+            </form>
+
+            <div class="lista-topo">
+              <h3>Usuarios cadastrados</h3>
+              <button type="button" class="btn-secundario-linha" id="atualizar-usuarios">Atualizar lista</button>
+            </div>
+            <div id="gestao-usuarios-lista" class="produtos-lista"></div>
+          </div>
+        </article>
+
+        <article class="painel-card">
+          <div class="painel-card-topo">
+            <div>
+              <h2>Promocoes e Campanhas</h2>
+              <p>Espaco reservado para regras promocionais, combos e periodos especiais.</p>
+            </div>
+            <div class="painel-card-acoes">
+              <button type="button" id="toggle-promocoes-card" class="btn-secundario-linha">Retrair</button>
+              <span class="card-tag">Futuro</span>
+            </div>
+          </div>
+          <div id="promocoes-card-conteudo" class="painel-card-conteudo">
+            <form id="promocao-form" class="produto-form">
+              <div class="campo-duplo">
+                <label>
+                  Nome da promocao
+                  <input type="text" id="promocao-nome" required>
+                </label>
+                <label>
+                  Desconto percentual
+                  <input type="number" id="promocao-desconto" min="0" step="0.01" required>
+                </label>
+              </div>
+
+              <label>
+                Descricao
+                <textarea id="promocao-descricao" rows="3" placeholder="Explique a regra da campanha, combo ou condicao especial"></textarea>
+              </label>
+
+              <div class="campo-duplo">
+                <label>
+                  Data de inicio
+                  <input type="datetime-local" id="promocao-data-inicio" required>
+                </label>
+                <label>
+                  Data de fim
+                  <input type="datetime-local" id="promocao-data-fim" required>
+                </label>
+              </div>
+
+              <label>
+                IDs dos produtos
+                <input type="text" id="promocao-produtos" placeholder="Ex.: 1, 2, 5">
+              </label>
+
+              <div class="produto-acoes-form">
+                <button type="submit" class="btn-principal-linha">Adicionar promocao</button>
+                <span id="promocao-form-status" class="status-texto"></span>
+              </div>
+            </form>
+
+            <div class="lista-topo">
+              <h3>Promocoes cadastradas</h3>
+              <button type="button" class="btn-secundario-linha" id="atualizar-promocoes">Atualizar lista</button>
+            </div>
+            <div id="gestao-promocoes-lista" class="produtos-lista"></div>
+          </div>
+        </article>
+
+        <article class="painel-card">
+          <div class="painel-card-topo">
+            <div>
+              <h2>Comandas e Mesas</h2>
+              <p>Espaco reservado para fluxo operacional das mesas, comandas abertas e fechamento.</p>
+            </div>
+            <span class="card-tag">Futuro</span>
+          </div>
+        </article>
+
+        <article class="painel-card">
+          <div class="painel-card-topo">
+            <div>
+              <h2>Relatorios Financeiros</h2>
+              <p>Espaco reservado para indicadores, historico de vendas e comparativos de desempenho.</p>
+            </div>
+            <span class="card-tag">Futuro</span>
+          </div>
+        </article>
+      </section>
+    </div>
+
+    <div class="chat-input">
+      <button class="btn-voltar-gestao" onclick="window.location.replace('/')"><h2>Voltar</h2></button>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='script/Gestao/gestao.js') }}"></script>
+</body>
+</html>

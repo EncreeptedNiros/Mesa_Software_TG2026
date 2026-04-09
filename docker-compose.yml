@@ -1,0 +1,73 @@
+
+# Please refer https://aka.ms/HTTPSinContainer on how to setup an https developer certificate for your ASP.NET Core service.
+
+#version: '3.4'
+
+networks:
+  integranetwork:
+    driver: bridge
+
+services:
+  mesaapi:
+    image: mesaapi
+    build:
+      context: .
+      dockerfile: ./API/MesaApi/Dockerfile
+    depends_on:
+      mesadb:
+        condition: service_healthy
+    ports:
+      - "5080:5080"
+    environment:
+      ConnectionStrings__MesaConnection: ${MESA_CONNECTION_STRING}
+      DefaultAdmin__Nome: ${DEFAULT_ADMIN_NAME:-Administrador}
+      DefaultAdmin__Login: ${DEFAULT_ADMIN_LOGIN:-admin}
+      DefaultAdmin__Senha: ${DEFAULT_ADMIN_PASSWORD}
+      DefaultAdmin__Perfil: ${DEFAULT_ADMIN_PROFILE:-Admin}
+      DefaultAdmin__AtualizarNoStartup: ${DEFAULT_ADMIN_UPDATE_ON_STARTUP:-false}
+    networks:
+      - integranetwork
+
+  mesadb:
+    image: mysql:9.1.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-mesa}
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./MesaDb:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    networks:
+      - integranetwork
+
+  mesaservicewa:
+    image: mesaservicewa
+    build: 
+      context: .
+      dockerfile: ./ServiceWA/Back-End/Dockerfile
+    volumes:
+      - ./ServiceWA/:/src
+      - ./ServiceWA/Front-End/templates:/src/Front-End/templates/
+      - ./ServiceWA/Front-End/static:/src/Front-End/static/
+    depends_on:
+      mesadb:
+        condition: service_healthy
+      mesaapi:
+        condition: service_started
+    environment:
+      - FLASK_APP=main.py
+      - TEMPLATES_AUTO_RELOAD=True
+      - PYTHONUNBUFFERED=1
+      - FLASK_SECRET_KEY=${FLASK_SECRET_KEY}
+      - SERVICEWA_API_BASE_URL=${SERVICEWA_API_BASE_URL:-http://mesaapi:5080/api}
+    ports:
+      - "5000:5000"
+    networks:
+      - integranetwork

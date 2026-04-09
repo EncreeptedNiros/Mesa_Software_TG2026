@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comandas</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Comandas/comandas.css') }}">
+</head>
+<body>
+    <div id="overlay-comanda" class="overlay">
+        <div class="modal modal-comanda" id="modal-comanda">
+            <button class="btn-fechar" onclick="fecharModalComanda()">X</button>
+            <h2>Nova comanda</h2>
+            <label class="campo-formulario" for="comanda-cliente">Cliente</label>
+            <input id="comanda-cliente" class="input-formulario" type="text" placeholder="Nome do cliente">
+
+            <label class="campo-formulario" for="comanda-data-abertura">Data de abertura</label>
+            <input id="comanda-data-abertura" class="input-formulario" type="datetime-local">
+
+            <div class="acoes-modal-comanda">
+                <button class="btn-principal btn-secundario" type="button" onclick="fecharModalComanda()">Cancelar</button>
+                <button class="btn-principal" type="button" onclick="criarComanda()">Criar comanda</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="chat-container">
+        <div class="chat-header">Mesa_Comandas</div>
+        <div class="chat-box" id="chat-box"></div>
+        <div class="chat-input chat-input-triplo">
+            <button class="btn-externo" onclick="window.location.replace('/')"><h2>Voltar</h2></button>
+            <button class="btn-externo" onclick="abrirModalComanda()"><h2>Adicionar</h2></button>
+            <button class="btn-externo" id="btn-toggle-fechadas" onclick="alternarComandasFechadas()"><h2>Mostrar fechadas</h2></button>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='script/Comandas/comandas.js') }}"></script>
+</body>
+</html>

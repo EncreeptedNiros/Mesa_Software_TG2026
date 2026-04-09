@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cardapio</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/Cardapio/cardapio.css') }}">
+</head>
+<body>
+  <script>
+    window.usuarioLogado = {{ "true" if logged_in else "false" }};
+    window.numeroMesaUrl = {{ numero_mesa|tojson }};
+  </script>
+  <header></header>
+
+  <div id="overlay" class="overlay">
+    <div class="modal" id="modal">
+        <button class="btn-fechar" onclick="fecharModal()">X</button>
+        <h2>Revisao do Pedido</h2>
+        <button class="btn-principal" onclick="iniciarFluxoPagamento()">Finalizar compra</button>
+    </div>
+  </div>
+
+  <div id="overlay-confirmacao" class="overlay overlay-confirmacao">
+    <div class="modal modal-confirmacao" id="modal-confirmacao">
+      <button class="btn-fechar" onclick="fecharModalConfirmacao()">X</button>
+      <h2>Produto adicionado</h2>
+      <p id="mensagem-confirmacao-carrinho">O produto foi adicionado ao carrinho.</p>
+      <div class="acoes-confirmacao">
+        <button class="btn-principal" onclick="fecharModalConfirmacao()">Continuar comprando</button>
+        <button class="btn-principal btn-secundario" onclick="abrirCarrinhoPelaConfirmacao()">Ver carrinho</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="overlay-finalizacao" class="overlay overlay-confirmacao">
+    <div class="modal modal-confirmacao" id="modal-finalizacao">
+      <button class="btn-fechar" onclick="fecharModalFinalizacao()">X</button>
+      <h2>Compra finalizada</h2>
+      <p id="mensagem-finalizacao-compra">Seu pedido foi enviado com sucesso.</p>
+      <div class="acoes-confirmacao">
+        <button class="btn-principal" onclick="fecharModalFinalizacao()">Continuar</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="overlay-pix" class="overlay">
+    <div class="modal modal-pix" id="modal-pix">
+      <button class="btn-fechar" onclick="fecharModalPix()">X</button>
+      <h2>Pagamento via Pix</h2>
+      <p class="pix-texto-apoio">Escaneie o QR Code ou copie o codigo Pix abaixo para concluir o pagamento.</p>
+      <div class="pix-qrcode-wrap">
+        <img id="pix-qrcode" class="pix-qrcode" alt="QR Code Pix">
+      </div>
+      <div class="pix-resumo">
+        <p id="pix-valor-total">Total: R$ 0,00</p>
+        <p id="pix-mesa-info"></p>
+      </div>
+      <label class="campo-pagamento" for="pix-codigo-copiavel">Codigo Pix copiavel</label>
+      <textarea id="pix-codigo-copiavel" class="input-pagamento input-textarea pix-codigo-copiavel" readonly></textarea>
+      <div class="acoes-pagamento-modal">
+        <button class="btn-principal btn-secundario" type="button" onclick="copiarCodigoPix()">Copiar codigo Pix</button>
+        <button class="btn-principal" type="button" onclick="confirmarPagamentoPix()">Confirmar pagamento</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="overlay-pagamento-informado" class="overlay">
+    <div class="modal modal-pagamento-informado" id="modal-pagamento-informado">
+      <button class="btn-fechar" onclick="fecharModalPagamentoInformado()">X</button>
+      <h2>Informe de pagamento</h2>
+      <p class="pix-texto-apoio">Selecione como o pagamento foi informado para finalizar o pedido.</p>
+      <div class="pagamento-informado-opcoes">
+        <label class="opcao-pagamento-informado">
+          <input type="radio" name="forma-pagamento-informado" value="Pix">
+          <span>Pix</span>
+        </label>
+        <label class="opcao-pagamento-informado">
+          <input type="radio" name="forma-pagamento-informado" value="Dinheiro">
+          <span>Dinheiro</span>
+        </label>
+        <label class="opcao-pagamento-informado">
+          <input type="radio" name="forma-pagamento-informado" value="Cartao de debito">
+          <span>Cartao de debito</span>
+        </label>
+        <label class="opcao-pagamento-informado">
+          <input type="radio" name="forma-pagamento-informado" value="Cartao de credito">
+          <span>Cartao de credito</span>
+        </label>
+        <label class="opcao-pagamento-informado">
+          <input type="radio" name="forma-pagamento-informado" value="Outro">
+          <span>Outro</span>
+        </label>
+      </div>
+      <div class="acoes-pagamento-modal">
+        <button class="btn-principal btn-secundario" type="button" onclick="fecharModalPagamentoInformado()">Cancelar</button>
+        <button class="btn-principal" type="button" onclick="confirmarPagamentoInformado()">Confirmar forma de pagamento</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="overlay-produto" class="overlay">
+    <div class="modal modal-produto">
+      <button class="btn-fechar" onclick="fecharModalProduto()">X</button>
+      <h2 id="produto-modal-nome">Produto</h2>
+      <p id="produto-modal-preco">R$ 0,00</p>
+
+      <label class="campo-pagamento" for="produto-quantidade">Quantidade</label>
+      <input id="produto-quantidade" class="input-pagamento" type="number" min="1" value="1">
+
+      <label class="campo-pagamento" for="produto-aditivos">Aditivos</label>
+      <textarea id="produto-aditivos" class="input-pagamento input-textarea" placeholder="Ex.: queijo extra, borda recheada"></textarea>
+
+      <label class="campo-pagamento" for="produto-observacoes">Observacoes ou alteracoes</label>
+      <textarea id="produto-observacoes" class="input-pagamento input-textarea" placeholder="Ex.: sem cebola, bem passado"></textarea>
+
+      <button class="btn-principal" onclick="confirmarAdicionarAoCarrinho()">Adicionar ao carrinho</button>
+    </div>
+  </div>
+
+
+
+
+  <button class="menu-categorias-toggle" id="menu-categorias-toggle" type="button" aria-label="Abrir menu de categorias" aria-expanded="false">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+
+  <div class="nav-container" id="nav-categorias" >
+    <div class="nav-header">Categorias</div>
+    <div class="nav-categoria" data-categoria="todos">Todos</div>
+    <div class="nav-categoria" data-categoria="bebidas">Bebidas</div>
+    <div class="nav-categoria" data-categoria="drinks">Drinks</div>
+    <div class="nav-categoria" data-categoria="cervejas">Cervejas</div>
+    <div class="nav-categoria" data-categoria="rosh">Rosh</div>
+    <div class="nav-categoria" data-categoria="porcoes">Porcoes</div>
+    <div class="nav-categoria" data-categoria="tabacaria">Tabacaria</div>
+  </div>
+
+
+  <div class="chat-container">
+    <div class="chat-header">Mesa_Cardapio  &lt;3</div>
+    
+    <div class="chat-box" id="chat-box"></div>
+    
+    <div class="chat-input chat-input-duplo">
+      <button class="btn-externo" onclick="window.location.replace('/')"><h2>Voltar</h2></button>
+      <button class="btn-externo" onclick="abrirModal()"><h2>Carrinho</h2></button>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='script/Cardapio/cardapio.js') }}"></script>
+</body>
+</html>

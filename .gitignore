@@ -1,0 +1,41 @@
+# Environment and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.pfx
+*.crt
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.venv/
+venv/
+
+# .NET
+**/bin/
+**/obj/
+
+# Local databases and runtime data
+MesaDb/
+*.db
+*.sqlite
+*.sqlite3
+
+# Editor and local tooling
+.vscode/
+.idea/
+.codex-build/
+.codexbuild/
+
+# OS files
+Thumbs.db
+Desktop.ini
+
+# Local project notes
+Mesa_Software.md
+Mesa_Software.canvas

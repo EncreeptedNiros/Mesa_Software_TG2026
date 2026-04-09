@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Login</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/Login/login.css') }}">
+</head>
+<body>
+  <header><div><a href="/">voltar</a></div></header>
+  <div class="chat-container">
+    <div class="chat-header">SHURI</div>
+    
+    <div class="chat-box" id="chat-box"></div>
+    
+    <div class="chat-input">
+      <input type="text" id="message-input" placeholder="Digite sua mensagem...">
+      <button onclick="sendMessage()"><h2>Enviar</h2></button>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='script/Login/login.js') }}"></script>
+</body>
+</html>
