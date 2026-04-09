@@ -1,6 +1,6 @@
 # Mesa Software
 
-Sistema para operacao de cardapio, pedidos, comandas, estoque, gestao e usuarios.
+Sistema para operacao de cardapio, pedidos, comandas, estoque, gestao e usuarios em estabelecimentos comerciais.
 
 ## Estrutura
 
