@@ -28,6 +28,11 @@ class MesaApiClient:
         response.raise_for_status()
         return response.json()
 
+    def get_pedido(self, pedido_id: int) -> dict:
+        response = requests.get(f"{self.base_url}/pedido/{pedido_id}", verify=False)
+        response.raise_for_status()
+        return response.json()
+
     def listar_comandas(self, skip: int = 0, take: int = 100) -> list:
         response = requests.get(
             f"{self.base_url}/comanda/?skip={skip}&take={take}",
@@ -64,6 +69,9 @@ class MesaApiClient:
             json={"Status": status},
             verify=False,
         )
+
+    def atualizar_pedido(self, pedido_id: int, payload: dict):
+        return requests.put(f"{self.base_url}/pedido/{pedido_id}", json=payload, verify=False)
 
     def criar_venda(self, payload: dict):
         return requests.post(f"{self.base_url}/Venda", json=payload, verify=False)

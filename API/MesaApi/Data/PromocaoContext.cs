@@ -15,6 +15,14 @@ namespace MesaApi.Data
         {
             modelBuilder.Entity<Promocao>().ToTable("Promocaos");
             modelBuilder.Entity<Promocao>()
+                .Property(promocao => promocao.Nome)
+                .HasMaxLength(120);
+
+            modelBuilder.Entity<Promocao>()
+                .Property(promocao => promocao.Descricao)
+                .HasMaxLength(500);
+
+            modelBuilder.Entity<Promocao>()
                 .Property(promocao => promocao.ProdutosIdsJson)
                 .HasColumnName("ProdutosIds")
                 .HasColumnType("longtext");

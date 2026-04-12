@@ -30,6 +30,7 @@ namespace MesaApi.Controllers
             {
                 Data_da_venda = pedidoDto.Data_da_venda,
                 Produto = produto,
+                NumeroMesa = pedidoDto.NumeroMesa,
                 Observacoes = pedidoDto.Observacoes,
                 Status = pedidoDto.Status
             };
@@ -107,6 +108,7 @@ namespace MesaApi.Controllers
 
             pedido.Data_da_venda = pedidoDto.Data_da_venda;
             pedido.Produto = produto;
+            pedido.NumeroMesa = pedidoDto.NumeroMesa;
             pedido.Observacoes = pedidoDto.Observacoes;
             pedido.Status = pedidoDto.Status;
 

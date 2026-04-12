@@ -1,9 +1,12 @@
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace MesaApi.Migrations.Pedido
 {
+    [DbContext(typeof(MesaApi.Data.PedidoContext))]
+    [Migration("20260402021000_PedidoObservacoes")]
     public partial class PedidoObservacoes : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)

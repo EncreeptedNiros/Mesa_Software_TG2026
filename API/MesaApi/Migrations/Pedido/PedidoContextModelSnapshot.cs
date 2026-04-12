@@ -33,6 +33,10 @@ namespace MesaApi.Migrations.Pedido
                     b.Property<DateTime>("Data_da_venda")
                         .HasColumnType("datetime(6)");
 
+                    b.Property<string>("NumeroMesa")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
                     b.Property<string>("Observacoes")
                         .IsRequired()
                         .HasColumnType("longtext");

@@ -132,13 +132,33 @@ async function adicionarMesaNasAnotacoes(pedidoId) {
     pedidosCarregados[indicePedido] = {
         ...pedido,
         numeroMesa: numeroMesaNormalizado,
+        NumeroMesa: numeroMesaNormalizado,
         observacoes: observacoesAtualizadas,
         Observacoes: observacoesAtualizadas
     };
 
-    renderizarPedidos(obterPedidosVisiveis());
-
     try {
+        const response = await fetch(`/atualizarpedido/${pedidoId}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                data_da_venda: pedido.data_da_venda || pedido.dataDaVenda || pedido.Data_da_venda || "",
+                numero_mesa: numeroMesaNormalizado,
+                observacoes: observacoesAtualizadas,
+                status: Boolean(pedido.status ?? pedido.Status)
+            })
+        });
+
+        const resultado = await lerRespostaJsonSegura(response);
+
+        if (!response.ok) {
+            throw new Error(resultado.erro || "Nao foi possivel atualizar o pedido.");
+        }
+
+        pedidosCarregados[indicePedido] = resultado;
+        renderizarPedidos(obterPedidosVisiveis());
         await copiarTexto(anotacao);
     } catch (error) {}
 }
@@ -171,6 +191,7 @@ function renderizarPedidos(pedidos) {
             <h3>${nomeProduto}</h3>
             <p>Status: ${statusPedido}</p>
             <p>Horario: ${horarioPedido}</p>
+            ${numeroMesa ? `<p>Mesa: ${numeroMesa}</p>` : ""}
             ${observacoes ? `<p>Observacoes: ${observacoes}</p>` : ""}
             <div class="pedido-acoes">
                 ${!pedido.status ? `

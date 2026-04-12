@@ -90,12 +90,32 @@ class SalesService:
         }
 
     def montar_observacoes_pedido(self, item: dict) -> str:
+        observacoes = self.remover_marcador_mesa(item.get("observacoes"))
         detalhes = []
         if item.get("aditivos"):
             detalhes.append(f'Aditivos: {item["aditivos"]}')
-        if item.get("observacoes"):
-            detalhes.append(f'Obs: {item["observacoes"]}')
+        if observacoes:
+            detalhes.append(f"Obs: {observacoes}")
         return " | ".join(detalhes)
+
+    def extrair_numero_mesa(self, observacoes: str) -> str:
+        texto = (observacoes or "").strip()
+        if not texto:
+            return ""
+
+        import re
+
+        correspondencia = re.search(r"(?:^|\|\s*)Mesa\s+([^|]+)", texto, re.IGNORECASE)
+        return (correspondencia.group(1) if correspondencia else "").strip()
+
+    def remover_marcador_mesa(self, observacoes: str) -> str:
+        texto = (observacoes or "").strip()
+        if not texto:
+            return ""
+
+        import re
+
+        return re.sub(r"(?:^|\s*\|\s*)Mesa\s+[^|]+", "", texto, flags=re.IGNORECASE).strip(" |")
 
     def normalizar_categoria(self, categoria: str) -> str:
         return (categoria or "").strip().lower()
@@ -121,6 +141,7 @@ class SalesService:
                 payload_pedido = {
                     "Data_da_venda": datetime.now().isoformat(),
                     "ProdutoId": produto.get("id", produto.get("Id")),
+                    "NumeroMesa": self.extrair_numero_mesa(item.get("observacoes")),
                     "Observacoes": self.montar_observacoes_pedido(item),
                     "Status": False,
                 }

@@ -103,6 +103,42 @@ class OrderController:
                 }
             ), 500
 
+    def atualizar_pedido(self, pedido_id: int):
+        try:
+            dados = request.get_json() or {}
+            pedido_atual = self.api_client.get_pedido(pedido_id)
+
+            if not pedido_atual:
+                return jsonify({"erro": "Pedido nao encontrado.", "status": "error"}), 404
+
+            produto = pedido_atual.get("produto", pedido_atual.get("Produto", {}))
+            produto_id = produto.get("id", produto.get("Id"))
+
+            if not produto_id:
+                return jsonify({"erro": "Produto do pedido nao encontrado.", "status": "error"}), 400
+
+            payload = {
+                "Data_da_venda": dados.get(
+                    "data_da_venda",
+                    pedido_atual.get("data_da_venda", pedido_atual.get("Data_da_venda")),
+                ),
+                "ProdutoId": int(produto_id),
+                "NumeroMesa": (dados.get("numero_mesa") or dados.get("numeroMesa") or "").strip(),
+                "Observacoes": (dados.get("observacoes") or "").strip(),
+                "Status": bool(dados.get("status", pedido_atual.get("status", pedido_atual.get("Status", False)))),
+            }
+
+            response = self.api_client.atualizar_pedido(pedido_id, payload)
+            retorno = self.api_client.read_json_with_fallback(response)
+            return jsonify(retorno), response.status_code
+        except Exception as error:
+            return jsonify(
+                {
+                    "erro": f"Erro interno: {str(error)}",
+                    "status": "error",
+                }
+            ), 500
+
     def atualizar_status_comanda(self, comanda_id: int):
         try:
             dados = request.get_json() or {}

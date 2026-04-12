@@ -109,6 +109,12 @@ def create_api_blueprint(controller: OrderController) -> Blueprint:
         methods=["PATCH"],
     )
     api.add_url_rule(
+        "/atualizarpedido/<int:pedido_id>",
+        endpoint="atualizar_pedido",
+        view_func=controller.atualizar_pedido,
+        methods=["PUT"],
+    )
+    api.add_url_rule(
         "/atualizarstatuscomanda/<int:comanda_id>",
         endpoint="atualizar_status_comanda",
         view_func=controller.atualizar_status_comanda,
