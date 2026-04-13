@@ -16,7 +16,9 @@ const botaoTogglePromocoesCard = document.getElementById("toggle-promocoes-card"
 const promocoesCardConteudo = document.getElementById("promocoes-card-conteudo");
 const botaoToggleUsuariosCard = document.getElementById("toggle-usuarios-card");
 const usuariosCardConteudo = document.getElementById("usuarios-card-conteudo");
-const apiProdutosUrl = "http://localhost:5080/api/produto";
+const apiProdutosProxyUrl = "/rotaparapuxartodososprodutosmasnaopodeterumnomeobvio";
+const apiCriarProdutoProxyUrl = "/criarproduto";
+const apiRemoverProdutoProxyUrl = "/removerproduto";
 const apiPromocoesProxyUrl = "/rotaparapuxartodasaspromocoesmasnaopodeterumnomeobvio";
 const apiUsuariosProxyUrl = "/rotaparapuxartodososusuariosmasnaopodeterumnomeobvio";
 const storageKeyProdutosCard = "gestao_produtos_card_retraido";
@@ -162,7 +164,7 @@ async function carregarProdutos() {
   definirStatusFormulario("Carregando produtos...", "info");
 
   try {
-    const response = await fetch(`${apiProdutosUrl}?skip=0&take=100`);
+    const response = await fetch(`${apiProdutosProxyUrl}?skip=0&take=100`);
     const produtos = await lerRespostaJsonSegura(response);
 
     if (!response.ok) {
@@ -222,7 +224,7 @@ async function removerProduto(id, nome) {
   definirStatusFormulario(`Removendo ${nome}...`, "info");
 
   try {
-    const response = await fetch(`${apiProdutosUrl}/${id}`, {
+    const response = await fetch(`${apiRemoverProdutoProxyUrl}/${id}`, {
       method: "DELETE"
     });
     const resultado = await lerRespostaJsonSegura(response);
@@ -388,7 +390,7 @@ if (produtoForm) {
         imagemUrl: await lerArquivoComoDataUrl(arquivoImagem)
       };
 
-      const response = await fetch(apiProdutosUrl, {
+      const response = await fetch(apiCriarProdutoProxyUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

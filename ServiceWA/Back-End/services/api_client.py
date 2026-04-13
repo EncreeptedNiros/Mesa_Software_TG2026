@@ -20,6 +20,12 @@ class MesaApiClient:
         response.raise_for_status()
         return response.json()
 
+    def criar_produto(self, payload: dict):
+        return requests.post(f"{self.base_url}/produto", json=payload, verify=False)
+
+    def deletar_produto(self, produto_id: int):
+        return requests.delete(f"{self.base_url}/produto/{produto_id}", verify=False)
+
     def listar_pedidos(self, skip: int = 0, take: int = 100) -> list:
         response = requests.get(
             f"{self.base_url}/pedido/?skip={skip}&take={take}",

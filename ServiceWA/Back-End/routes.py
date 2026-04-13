@@ -67,6 +67,18 @@ def create_api_blueprint(controller: OrderController) -> Blueprint:
         methods=["GET"],
     )
     api.add_url_rule(
+        "/criarproduto",
+        endpoint="criar_produto",
+        view_func=controller.criar_produto,
+        methods=["POST"],
+    )
+    api.add_url_rule(
+        "/removerproduto/<int:produto_id>",
+        endpoint="remover_produto",
+        view_func=controller.remover_produto,
+        methods=["DELETE"],
+    )
+    api.add_url_rule(
         "/rotaparapuxartodosospedidosmasnaopodeterumnomeobvio",
         endpoint="listar_pedidos",
         view_func=controller.listar_pedidos,

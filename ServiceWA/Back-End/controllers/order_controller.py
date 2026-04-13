@@ -13,6 +13,45 @@ class OrderController:
     def listar_produtos(self):
         return jsonify(self.api_client.listar_produtos())
 
+    def criar_produto(self):
+        try:
+            dados = request.get_json() or {}
+            payload = {
+                "Nome": (dados.get("nome") or "").strip(),
+                "Categoria": (dados.get("categoria") or "").strip(),
+                "Custo": float(dados.get("custo") or 0),
+                "Valor": float(dados.get("valor") or 0),
+                "Receita": (dados.get("receita") or "").strip(),
+                "ImagemUrl": dados.get("imagemUrl") or "",
+            }
+
+            if not payload["Nome"] or not payload["Categoria"]:
+                return jsonify({"erro": "Nome e categoria sao obrigatorios.", "status": "error"}), 400
+
+            response = self.api_client.criar_produto(payload)
+            retorno = self.api_client.read_json_with_fallback(response)
+            return jsonify(retorno), response.status_code
+        except Exception as error:
+            return jsonify(
+                {
+                    "erro": f"Erro interno: {str(error)}",
+                    "status": "error",
+                }
+            ), 500
+
+    def remover_produto(self, produto_id: int):
+        try:
+            response = self.api_client.deletar_produto(produto_id)
+            retorno = self.api_client.read_json_with_fallback(response)
+            return jsonify(retorno), response.status_code
+        except Exception as error:
+            return jsonify(
+                {
+                    "erro": f"Erro interno: {str(error)}",
+                    "status": "error",
+                }
+            ), 500
+
     def listar_pedidos(self):
         return jsonify(self.api_client.listar_pedidos())
 
